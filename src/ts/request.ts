@@ -2,7 +2,7 @@ const { default: axios } = require("axios")
 
 var baseurl = 'http://localhost:8080'
 
-async function get(path: string, ...params: any) {
+async function get(path: string, authorization: string,...params: any) {
     var url = baseurl + path
     for (let param of params) {
         url += ('/' + param) 
@@ -14,6 +14,7 @@ async function get(path: string, ...params: any) {
         url: url,
         headers: { 
             'content-type': 'application/json',
+            'Authorization': authorization
          },
     }).then(function (response: any) {
         return response.data
@@ -21,13 +22,13 @@ async function get(path: string, ...params: any) {
         console.log(error)
     })
 }
-async function post(path: string, data: any){
+async function post(path: string, authorization: string, data: any){
     return await axios({
         method: 'post',
         url: baseurl + path,
         headers: { 
             'content-type': 'application/json',
-            
+            'Authorization': authorization
          },
         data: JSON.stringify(data)
     }).then(function (response: any) {

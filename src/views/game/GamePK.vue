@@ -1,27 +1,26 @@
 <template>
     <CardItem>
         <template #head>
-            <img src="https://game-platform-hxh.oss-cn-beijing.aliyuncs.com/many.png"
-            style="margin-left: -30vw;"/>
+            <img src="https://game-platform-hxh.oss-cn-beijing.aliyuncs.com/many.png" style="margin-left: -30vw;" />
         </template>
-        <template #body >
-                <div v-if="store.state.wssocket.status === 'playing'">
-                    <el-countdown title="倒计时" :value="countDown" />
-                    <canvas id="can" ref="canvas" :width="canvasSize" :height="canvasSize"></canvas>
-                </div>
+        <template #body>
+            <div v-if="store.state.wssocket.status === 'playing'">
+                <el-countdown title="倒计时" :value="countDown" />
+                <canvas id="can" ref="canvas" :width="canvasSize" :height="canvasSize"></canvas>
+            </div>
 
-                <div :width="canvasSize" :height="canvasSize" v-else-if="store.state.wssocket.status === 'matching'">
-                    <el-row>
-                        <el-col :span="12">
-                            <el-text class="mx-1">{{ store.state.username }}</el-text>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-text class="mx-1">{{ store.state.wssocket.opponent_name }}</el-text>
-                        </el-col>
-                    </el-row>
-                    <el-button @click="click_button">{{ button }}</el-button>
-                </div>
-            
+            <div :width="canvasSize" :height="canvasSize" v-else-if="store.state.wssocket.status === 'matching'">
+                <el-row>
+                    <el-col :span="12">
+                        <el-text class="mx-1">{{ store.state.username }}</el-text>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-text class="mx-1">{{ store.state.wssocket.opponent_name }}</el-text>
+                    </el-col>
+                </el-row>
+                <el-button @click="click_button">{{ button }}</el-button>
+            </div>
+
         </template>
     </CardItem>
 </template>
@@ -169,7 +168,25 @@ export default {
                         store.state.wssocket.turn = " "
                     }, 150)
 
-                } 
+                } else if (data.event === "countDown") {
+                    countDown.value = data.countDown
+                } else if (data.event === "timeout") {
+                    if (data.timeout == store.state.wssocket.turn) {
+                        timer.value = setTimeout(() => {
+                            alert('time out you lose')
+                        }, 150)
+                    } else {
+                        timer.value = setTimeout(() => {
+                            alert('your opponter is time out ,you victory')
+                        }, 150)
+                    }
+                    timer.value = setTimeout(() => {
+                        store.state.wssocket.opponent_name = ""
+                        store.state.wssocket.status = "matching"
+                        button.value = "开始匹配"
+                        store.state.wssocket.turn = " "
+                    }, 150)
+                }
             }
 
             socket.onclose = () => {
@@ -220,5 +237,4 @@ canvas {
     border-radius: 4px;
     min-height: 36px;
 }
-
 </style>

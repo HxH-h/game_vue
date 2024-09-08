@@ -25,6 +25,14 @@ export default createStore({
     },
     setPhoto(state, photo) {
       state.photo = photo
+    },
+    logout(state){
+      state.username = ''
+      state.email = ''
+      state.level = ''
+      state.rank = ''
+      state.photo = ''
+      state.token = ''
     }
   },
   actions: {

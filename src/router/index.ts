@@ -75,7 +75,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
 
       if (jwt_token) {
-        let response = await post('/player/verifyToken', {
+        let response = await post('/player/verifyToken', '',{
           token: jwt_token
         })
         if (response.code == 3031) {

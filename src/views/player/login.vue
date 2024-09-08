@@ -65,7 +65,7 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate(async (valid) => {
-        let response = await post('/player/login', ruleForm)
+        let response = await post('/player/login','' ,ruleForm)
         store.commit('setToken', response.data)
         route.push({ name: 'main' })
         if (valid) {

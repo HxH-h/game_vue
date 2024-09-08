@@ -2,6 +2,7 @@
     <CardItem>
         <template #head><img /></template>
         <template #body>
+            <el-countdown title="倒计时" :value="countDown" />
             <canvas id="can" ref="canvas" :width="canvasSize" :height="canvasSize"></canvas>
         </template>
     </CardItem>
@@ -152,6 +153,27 @@ export default {
                         gameover()
                     }, 150)
 
+                } else if (data.event === "countDown") {
+                    console.log("countDown" + data.countDown)
+                    countDown.value = data.countDown
+                } else if (data.event === "timeout") {
+                    if (data.timeout == store.state.wssocket.turn) {
+                        timer.value = setTimeout(() => {
+                            alert('time out you lose')
+                            window.removeEventListener('mousemove', MoveHandle)
+                            route.push({ name: 'gamemode' })
+                        }, 150)
+                    } else {
+                        timer.value = setTimeout(() => {
+                            alert('your opponter is time out ,you victory')
+                            window.removeEventListener('mousemove', MoveHandle)
+                            route.push({ name: 'gamemode' })
+                        }, 150)
+                    }
+                    timer.value = setTimeout(() => {
+                        gameover()
+                    }, 150)
+                    
                 }
             }
 

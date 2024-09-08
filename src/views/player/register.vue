@@ -159,7 +159,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            post('/player/register',ruleForm)
+            post('/player/register','',ruleForm)
             console.log('submit!')
         } else {
             console.log('error submit!')
@@ -171,7 +171,7 @@ function getCode(){
     get('/player/genCode',ruleForm.email,ruleForm.captcha)
 }
 async function  getCaptcha(){
-    imgBase64.value =await get('/player/genCaptcha')
+    imgBase64.value =await get('/player/genCaptcha','')
 
 }
 

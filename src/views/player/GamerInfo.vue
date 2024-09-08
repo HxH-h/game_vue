@@ -7,7 +7,7 @@
             <el-row :guter="24">
                 <el-col :span="6">
                     <div class="grid-content ep-bg-purple" />
-                    <div class="userInfo" style="margin-top: 10vh">
+                    <div class="userInfo" style="margin-top: 8vh">
                         <el-card style="max-width: 480px">
                             <template #header>
                                 <div class="card-header">
@@ -27,7 +27,11 @@
                             <p>邮箱: {{ store.state.email }} </p>
                             <p>水平: {{ store.state.level }}</p>
                             <p>排名: {{ store.state.rank }}</p>
-                            <template #footer>Footer content</template>
+                            <template #footer>
+                                <p>总对局: {{ gamedata.gameNum }}</p>
+                                <p>胜局: {{ gamedata.winNum }}</p>
+                                <p>胜率: {{ gamedata.winRate }}%</p>
+                            </template>
                         </el-card>
                     </div>
                 </el-col>
@@ -65,9 +69,11 @@ import route from '@/router/index';
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { reactive } from 'vue';
+import { get } from '@/ts/request';
 const store = useStore()
 
 const history = ref([])
+const gamedata = reactive({})
 
 function getDetailedChess(e) {
     const query = e
@@ -118,30 +124,17 @@ function beforeAvatarUpload(file) {
     return isJPG && isLt2M;
 }
 
-// TODO 实现玩家数据分析
+// TODO 实现玩家数据分析展示
 
 onMounted(async () => {
-    // TODO 优化axios函数
-    history.value = await axios({
-        method: "get",
-        url: "http://localhost:8080/player/getPlayerInfo",
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': store.state.token
-        }
-    }).then(function (resp) {
-        store.commit("setUserInfo", resp.data.data)
-    })
-    history.value = await axios({
-        method: "get",
-        url: "http://localhost:8080/player/getGameHistory/1/30",
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': store.state.token
-        }
-    }).then(function (resp) {
-        return resp.data.data
-    })
+    
+    let inforesp = await get('/player/getPlayerInfo', store.state.token)
+    let historyresp = await get('/player/getGameHistory/1/30', store.state.token)
+    store.commit("setUserInfo", inforesp.data)
+    history.value = historyresp.data
+    gamedata.gameNum = Number(inforesp.data.gameNum)
+    gamedata.winNum = Number(inforesp.data.winNum)
+    gamedata.winRate = (inforesp.data.winNum / inforesp.data.gameNum * 100).toFixed(2)
 
 })
 

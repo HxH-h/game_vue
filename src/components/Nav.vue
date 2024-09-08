@@ -31,7 +31,8 @@ import route from '../router/index'
 const activeIndex = ref('1')
 const store = useStore()
 function logout() {
-    store.dispatch("removeToken")
+    store.dispatch("logout")
+    localStorage.removeItem("jwt_token")
 }
 function jumpPage(page) {
     route.push({ name: page })
