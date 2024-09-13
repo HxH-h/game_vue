@@ -70,20 +70,13 @@ router.beforeEach(async (to, from, next) => {
   //如果路由需要跳转
   if (to.meta.isAuth) {
     if (store.state.token != '') {
-      // TODO 验证store.state.token是否过期
+      
       next()  //放行
     } else {
 
       if (jwt_token) {
-        let response = await post('/player/verifyToken', '',{
-          token: jwt_token
-        })
-        if (response.code == 3031) {
-          store.commit("setToken", jwt_token)
-          next()
-        } else {
-          next('/login')
-        }
+        store.commit("setToken", jwt_token)
+        next()
       } else {
         alert('抱歉，您无权限查看！')
         next('/login')

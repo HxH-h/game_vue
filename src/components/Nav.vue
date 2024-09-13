@@ -33,6 +33,7 @@ const store = useStore()
 function logout() {
     store.dispatch("logout")
     localStorage.removeItem("jwt_token")
+    route.push({ name: 'login' })
 }
 function jumpPage(page) {
     route.push({ name: page })

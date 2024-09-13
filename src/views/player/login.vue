@@ -21,8 +21,11 @@
 
 
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm(ruleFormRef)" style="position: relative; left: 100px;">
+                    <el-button type="primary" @click="submitForm(ruleFormRef)" style="position: relative; left: 10px;">
                         Submit
+                    </el-button>
+                    <el-button type="primary" @click="toRegister()" style="position: relative; left: 80px;">
+                        Register
                     </el-button>
                 </el-form-item>
             </el-form>
@@ -65,7 +68,7 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate(async (valid) => {
-        let response = await post('/player/login','' ,ruleForm)
+        let response = await post('/login','' ,ruleForm)
         store.commit('setToken', response.data)
         route.push({ name: 'main' })
         if (valid) {
@@ -76,6 +79,9 @@ const submitForm = (formEl: FormInstance | undefined) => {
     })
 }
 
+function toRegister(){
+    route.push({ name: 'register' })
+}
 
 
 </script>

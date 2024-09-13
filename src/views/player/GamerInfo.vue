@@ -92,7 +92,7 @@ function uploadPicture(params) {
         }
     }).then(function (resp) {
         if (resp.data.code == 1051) {
-            store.commit("setPhoto",resp.data.data)
+            store.commit("setPhoto", resp.data.data)
             ElMessage({
                 message: 'Add headphoto successfully',
                 type: 'success',
@@ -127,14 +127,25 @@ function beforeAvatarUpload(file) {
 // TODO 实现玩家数据分析展示
 
 onMounted(async () => {
-    
+
     let inforesp = await get('/player/getPlayerInfo', store.state.token)
     let historyresp = await get('/player/getGameHistory/1/30', store.state.token)
-    store.commit("setUserInfo", inforesp.data)
-    history.value = historyresp.data
-    gamedata.gameNum = Number(inforesp.data.gameNum)
-    gamedata.winNum = Number(inforesp.data.winNum)
-    gamedata.winRate = (inforesp.data.winNum / inforesp.data.gameNum * 100).toFixed(2)
+
+    if (inforesp.code == 4001 || historyresp.code == 4001) {
+        ElMessage({
+            message: 'your request are blocked please wait sometime',
+            type: 'warning',
+        })
+        return
+    }
+    if (inforesp.code == 1031 && historyresp.code == 1041) {
+        store.commit("setUserInfo", inforesp.data)
+        history.value = historyresp.data
+        gamedata.gameNum = Number(inforesp.data.gameNum)
+        gamedata.winNum = Number(inforesp.data.winNum)
+        gamedata.winRate = (inforesp.data.winNum / inforesp.data.gameNum * 100).toFixed(2)
+    }
+
 
 })
 

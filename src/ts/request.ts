@@ -1,4 +1,4 @@
-const { default: axios } = require("axios")
+import service from "./intercepter"
 
 var baseurl = 'http://localhost:8080'
 
@@ -9,7 +9,7 @@ async function get(path: string, authorization: string,...params: any) {
     
     }
     
-    return await axios({
+    return await service({
         method: 'get',
         url: url,
         headers: { 
@@ -23,7 +23,7 @@ async function get(path: string, authorization: string,...params: any) {
     })
 }
 async function post(path: string, authorization: string, data: any){
-    return await axios({
+    return await service({
         method: 'post',
         url: baseurl + path,
         headers: { 

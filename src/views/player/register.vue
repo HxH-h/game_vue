@@ -55,6 +55,7 @@
 import { reactive, ref , onMounted} from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import {get,post} from '../../ts/request'
+import router from '@/router';
 
 const ruleFormRef = ref<FormInstance>()
 const imgBase64 = ref('')
@@ -159,8 +160,9 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            post('/player/register','',ruleForm)
+            post('/register/register','',ruleForm)
             console.log('submit!')
+            router.push({ name: 'login' })
         } else {
             console.log('error submit!')
         }
@@ -168,10 +170,10 @@ const submitForm = (formEl: FormInstance | undefined) => {
 }
 
 function getCode(){
-    get('/player/genCode',ruleForm.email,ruleForm.captcha)
+    get('/register/genCode','',ruleForm.email,ruleForm.captcha)
 }
 async function  getCaptcha(){
-    imgBase64.value =await get('/player/genCaptcha','')
+    imgBase64.value =await get('/register/genCaptcha','')
 
 }
 
