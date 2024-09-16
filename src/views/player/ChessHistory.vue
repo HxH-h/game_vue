@@ -1,10 +1,9 @@
 <template>
     <CardItem>
         <template #head>
-            <img src="https://game-platform-hxh.oss-cn-beijing.aliyuncs.com/history.png"
-        style="margin-left: -30vw;"/>
+            <img src="https://game-platform-hxh.oss-cn-beijing.aliyuncs.com/history.png" style="margin-left: -30vw;" />
         </template>
-        <template #body >
+        <template #body>
             <canvas id="can" ref="canvas" :width="canvasSize" :height="canvasSize" style="margin-top: 3vh;"></canvas>
         </template>
     </CardItem>
@@ -12,8 +11,7 @@
 <script>
 import { ref, onMounted } from 'vue';
 import CardItem from '@/components/CardItem.vue'
-import axios from 'axios';
-import { useRoute } from 'vue-router'
+
 export default {
     components: {
         CardItem
@@ -25,7 +23,7 @@ export default {
         const gridSize = (canvasSize - 2 * margin) / (size - 1);
         const canvas = ref(null);
         var ctx = null
-        const route = useRoute()
+
         let chessboard = ref([])
         chessboard.value = JSON.parse(history.state.params).chess
         function render() {
@@ -67,30 +65,34 @@ export default {
             let y = 0;
             for (let i = 0; i < 19; i++) {
                 for (let j = 0; j < 19; j++) {
-                    if (chessboard.value[i][j] == 1) {
+                    if (chessboard.value[i][j] % 2 === 1) {
                         x = margin + gridSize * j;
                         y = margin + gridSize * i;
-                        drawChess(x, y, 'black')
-                    } else if (chessboard.value[i][j] == 2) {
+                        drawChess(x, y, 'black', 'white', chessboard.value[i][j])
+                    } else if (chessboard.value[i][j] % 2 === 0 && chessboard.value[i][j] !== 0) {
                         x = margin + gridSize * j;
                         y = margin + gridSize * i;
-                        drawChess(x, y, 'white')
+                        drawChess(x, y, 'white', 'black', chessboard.value[i][j])
                     }
                 }
 
             }
         }
-        function drawChess(x, y, color) {
-            ctx.beginPath();//开始绘制
-            ctx.arc(x, y, 6, 0, 2 * Math.PI);//arc 的意思是“弧”
-            ctx.strokeStyle = color;
-            ctx.fillStyle = color;//设置填充颜色
+        function drawChess(x, y, color, fontcolor, num) {
+            ctx.beginPath();
+            ctx.arc(x, y, 6, 0, Math.PI * 2);
+            ctx.fillStyle = color;
             ctx.fill();
-            ctx.stroke()
+
+            // 在棋子中央写入数字
+            ctx.font = "10px Arial";
+            ctx.fillStyle = fontcolor;
+            ctx.textAlign = 'center';
+            ctx.fillText(num, x, y + 5);
+
         }
         onMounted(() => {
             ctx = canvas.value.getContext('2d');
-            console.log(JSON.parse(history.state.params))
             render()
             drawAllChess()
         })

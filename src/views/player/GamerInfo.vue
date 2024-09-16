@@ -38,7 +38,7 @@
                 <el-col :span="18">
                     <div class="grid-content ep-bg-purple-light" />
                     <div class="historyList">
-                        <el-scrollbar max-height="400px">
+                        <el-scrollbar max-height="500px">
                             <el-table :data="history" :header-cell-style="{ 'text-align': 'center' }"
                                 :cell-style="{ 'text-align': 'center' }"
                                 :default-sort="{ prop: 'time', order: 'descending' }" @cell-click="getDetailedChess"
@@ -53,6 +53,9 @@
 
                             </el-table>
                         </el-scrollbar>
+                    </div>
+                    <div class="pagination">
+                        <el-pagination layout="prev, pager, next" :total="1000" />
                     </div>
                 </el-col>
             </el-row>
@@ -74,7 +77,7 @@ const store = useStore()
 
 const history = ref([])
 const gamedata = reactive({})
-
+const imageUrl = ref('')
 function getDetailedChess(e) {
     const query = e
     const params = JSON.stringify(e)
@@ -140,7 +143,10 @@ onMounted(async () => {
     }
     if (inforesp.code == 1031 && historyresp.code == 1041) {
         store.commit("setUserInfo", inforesp.data)
-        history.value = historyresp.data
+        history.value = historyresp.data.map(history => {
+            history.chess = transform(history.chess)
+            return history
+        })
         gamedata.gameNum = Number(inforesp.data.gameNum)
         gamedata.winNum = Number(inforesp.data.winNum)
         gamedata.winRate = (inforesp.data.winNum / inforesp.data.gameNum * 100).toFixed(2)
@@ -148,7 +154,69 @@ onMounted(async () => {
 
 
 })
+function transform(chess) {
+    // 解压字符串
+    var s = ""
+    var temp = "0000000000000000000"
+    var empty = true
+    for (var i = 0; i < chess.length; i++) {
+        if (chess[i] >= 'a' && chess[i] <= 'z') {
 
+            for (var j = 0; j < chess[i].charCodeAt(0) - 'a'.charCodeAt(0); j++) {
+                s += "0"
+            }
+            continue
+        } else if (chess[i] == ',') {
+            if (empty) {
+                s += temp
+            }
+            empty = true
+        } else {
+            empty = false
+        }
+        s += chess[i]
+    }
+    // 字符串转棋盘
+    var ret = []
+    for (let i = 0; i < 19; i++) {
+        ret[i] = [];
+    }
+    var j = 0, k = 0;
+    var tempnum = "";
+    var flag = false;
+    for (var i = 0; i < s.length; i++) {
+
+        if (s[i] == '/' || s[i] == ',') {
+            j++;
+            k = 0;
+            continue;
+        }
+        if (s[i] == '(') {
+            flag = true;
+            continue;
+        }
+        if (s[i] == ')') {
+            ret[j][k++] = parseInt(tempnum)
+            tempnum = "";
+            flag = false;
+            continue;
+        }
+        if (flag) {
+            tempnum += s[i];
+        } else {
+
+            var c = parseInt(s[i]);
+            if (c == 0) {
+                ret[j][k++] = 0;
+            } else {
+                ret[j][k++] = c
+            }
+        }
+
+    }
+    return ret;
+
+}
 
 
 </script>
@@ -215,5 +283,10 @@ p {
     border-radius: 4px;
     background: var(--el-color-primary-light-9);
     color: var(--el-color-primary);
+}
+.pagination{
+    padding: 0 10%;
+    padding-top: 5vh;
+    padding-left: 20vw;
 }
 </style>
