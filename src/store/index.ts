@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import  WsSocket from './WsSocket'
+import gamer from './gamer'
 export default createStore({
   state: {
     username: '',
@@ -38,6 +38,6 @@ export default createStore({
   actions: {
   },
   modules: {
-    wssocket: WsSocket
+     gamer
   }
 })

@@ -45,6 +45,8 @@ import type { FormInstance, FormRules } from 'element-plus'
 import route from '@/router/index';
 import { post } from '@/ts/request';
 const ruleFormRef = ref<FormInstance>()
+
+
 const store = useStore();
 
 const validatePass = (rule: any, value: any, callback: any) => {
@@ -69,6 +71,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate(async (valid) => {
         let response = await post('/login','' ,ruleForm)
+        // TODO 判断是否正确  
+
         store.commit('setToken', response.data)
         route.push({ name: 'main' })
         if (valid) {

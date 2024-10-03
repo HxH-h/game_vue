@@ -15,17 +15,17 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/main.vue'),
     children: [
       {
-        path: 'gamemode',
+        path: '/gamemode',
         name: 'gamemode',
         component: () => import('../views/game/GameMode.vue')
       },
       {
-        path: 'gamepk',
+        path: '/gamepk',
         name: 'gamepk',
         component: () => import('../views/game/GamePK.vue')
       },
       {
-        path: 'gameAI',
+        path: '/gameAI',
         name: 'gameAI',
         component: () => import('../views/game/GameAI.vue')
       }

@@ -116,7 +116,7 @@ export default {
             Chesses = new Chess(ctx, margin, gridSize)
             window.addEventListener('mousemove', MoveHandle);
         }
-
+        // TODO 修改websocket
         const store = useStore()
         let socket = null
         onMounted(() => {
@@ -134,7 +134,6 @@ export default {
                     store.state.wssocket.opponent_name = msg.oppont_name
                     store.state.wssocket.status = "playing"
                     store.state.wssocket.turn = msg.turn
-                    console.log(msg)
                     timer.value = setTimeout(() => {
                         render()
                     }, 150)

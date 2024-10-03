@@ -55,7 +55,7 @@
                         </el-scrollbar>
                     </div>
                     <div class="pagination">
-                        <el-pagination layout="prev, pager, next" :total="1000" />
+                        <el-pagination layout="prev, pager, next" :total=total @current-change="getHistory" />
                     </div>
                 </el-col>
             </el-row>
@@ -73,9 +73,11 @@ import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { reactive } from 'vue';
 import { get } from '@/ts/request';
+import {transform} from '@/ts/utils'
 const store = useStore()
 
 const history = ref([])
+const total = ref(0)
 const gamedata = reactive({})
 const imageUrl = ref('')
 function getDetailedChess(e) {
@@ -131,18 +133,20 @@ function beforeAvatarUpload(file) {
 
 onMounted(async () => {
 
+    let hisnum = await get('/player/getHisNum', store.state.token)
     let inforesp = await get('/player/getPlayerInfo', store.state.token)
-    let historyresp = await get('/player/getGameHistory/1/30', store.state.token)
+    let historyresp = await get('/player/getGameHistory/1/10', store.state.token)
 
-    if (inforesp.code == 4001 || historyresp.code == 4001) {
+    if (inforesp.code == 4001 || historyresp.code == 4001 || hisnum.code == 4001) {
         ElMessage({
             message: 'your request are blocked please wait sometime',
             type: 'warning',
         })
         return
     }
-    if (inforesp.code == 1031 && historyresp.code == 1041) {
+    if (inforesp.code == 1031 && historyresp.code == 1041 && hisnum.code == 1061) {
         store.commit("setUserInfo", inforesp.data)
+        total.value = hisnum.data
         history.value = historyresp.data.map(history => {
             history.chess = transform(history.chess)
             return history
@@ -154,69 +158,23 @@ onMounted(async () => {
 
 
 })
-function transform(chess) {
-    // 解压字符串
-    var s = ""
-    var temp = "0000000000000000000"
-    var empty = true
-    for (var i = 0; i < chess.length; i++) {
-        if (chess[i] >= 'a' && chess[i] <= 'z') {
-
-            for (var j = 0; j < chess[i].charCodeAt(0) - 'a'.charCodeAt(0); j++) {
-                s += "0"
-            }
-            continue
-        } else if (chess[i] == ',') {
-            if (empty) {
-                s += temp
-            }
-            empty = true
-        } else {
-            empty = false
-        }
-        s += chess[i]
+async function getHistory(page) {
+    let historyresp = await get('/player/getGameHistory/' + page + '/10', store.state.token)
+    if(historyresp.code == 4001){
+        ElMessage({
+            message: 'your request are blocked please wait sometime',
+            type: 'warning',
+        })
+        return
     }
-    // 字符串转棋盘
-    var ret = []
-    for (let i = 0; i < 19; i++) {
-        ret[i] = [];
+    if(historyresp.code == 1041){
+        history.value = historyresp.data.map(history => {
+            history.chess = transform(history.chess)
+            return history
+        })
     }
-    var j = 0, k = 0;
-    var tempnum = "";
-    var flag = false;
-    for (var i = 0; i < s.length; i++) {
-
-        if (s[i] == '/' || s[i] == ',') {
-            j++;
-            k = 0;
-            continue;
-        }
-        if (s[i] == '(') {
-            flag = true;
-            continue;
-        }
-        if (s[i] == ')') {
-            ret[j][k++] = parseInt(tempnum)
-            tempnum = "";
-            flag = false;
-            continue;
-        }
-        if (flag) {
-            tempnum += s[i];
-        } else {
-
-            var c = parseInt(s[i]);
-            if (c == 0) {
-                ret[j][k++] = 0;
-            } else {
-                ret[j][k++] = c
-            }
-        }
-
-    }
-    return ret;
-
 }
+
 
 
 </script>
