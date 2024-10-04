@@ -1,6 +1,5 @@
 import {Game_Obj} from './Game_Obj.js'
 
-// TODO 改变棋局统计方法，计数和落子使用同一棋盘
 
 export class Chess extends Game_Obj{
     constructor(ctx,margin,gridSize){

@@ -10,19 +10,17 @@ import { useStore } from 'vuex';
 import { onMounted, onUnmounted, watch } from 'vue';
 import router from '@/router';
 
-const store = useStore();
 const wsstore = useWsStore();
 
 // 对战基于该页面 直接在该页面开启websocket
 onMounted(() => {
     console.log('start connection')
-    wsstore.createWs("ws://localhost:8080/websocket" , store.state.token)
+    wsstore.createWs()
     console.log('connected')
     watch(() => wsstore.msg, (newValue, oldValue) => {
         const data = JSON.parse(newValue)
         if (data.event == "reconnect"){
             router.push({name: "gameAI" , state: {data}})
-            console.log("main 断线重连")
         }
     })
 })

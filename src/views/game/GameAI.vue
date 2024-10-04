@@ -58,7 +58,6 @@ export default {
                     event: "startAI"
                 })
             } else {
-                console.log("main recovery")
                 recovery(pagedata.reconnect)
             }
 
@@ -132,7 +131,6 @@ export default {
                     }, 150)
 
                 } else if (data.event === "reconnect") {
-                    console.log("gameai reconnect")
                     recovery(data.reconnect)
                 }
             })

@@ -28,6 +28,24 @@ const routes: Array<RouteRecordRaw> = [
         path: '/gameAI',
         name: 'gameAI',
         component: () => import('../views/game/GameAI.vue')
+      },
+      {
+        path: '/chessgame',
+        name: 'chessgame',
+        meta: { isAuth: true },
+        component: () => import('../views/game/chessGame.vue')
+      },
+      {
+        path: '/gamerinfo',
+        name: 'gamerinfo',
+        meta: { isAuth: true },
+        component: () => import('../views/player/GamerInfo.vue')
+      },
+      {
+        path: '/chesshistory',
+        name: 'chesshistory',
+        meta: { isAuth: true },
+        component: () => import('../views/player/ChessHistory.vue')
       }
     ]
   },
@@ -42,18 +60,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'register',
     component: () => import('../views/player/register.vue')
   },
-  {
-    path: '/gamerinfo',
-    name: 'gamerinfo',
-    meta: { isAuth: true },
-    component: () => import('../views/player/GamerInfo.vue')
-  },
-  {
-    path: '/chesshistory',
-    name: 'chesshistory',
-    meta: { isAuth: true },
-    component: () => import('../views/player/ChessHistory.vue')
-  }
+  
 
 ]
 

@@ -18,6 +18,13 @@
                     </div>
                 </el-col>
             </el-row> 
+            <el-row :gutter="20">
+                <el-col :span="6" :offset="9">
+                    <div class="grid-content ep-bg-purple" >
+                        <el-button @click="jump('chessgame','test')">test</el-button>
+                    </div>
+                </el-col>
+            </el-row> 
         </template>
     </CardItem>
 
@@ -25,6 +32,7 @@
 
 <script>
 import CardItem from '@/components/CardItem.vue'
+import router from '@/router/index';
 import route from '@/router/index'
 export default {
     components: {
@@ -34,8 +42,12 @@ export default {
         function jumpPage(page){
           route.push({ name: page })
         }
+        function jump(page , params){
+            router.push({ name: page, state: {params} })
+        }
         return{
-            jumpPage
+            jumpPage,
+            jump
         }
     }
 
