@@ -1,5 +1,5 @@
 <template>
-    <CardItem>
+    <CardItem :width=80 :height=90>
         <template #head>
             <img />
         </template>
@@ -7,8 +7,8 @@
             <el-row :guter="24">
                 <el-col :span="6">
                     <div class="grid-content ep-bg-purple" />
-                    <div class="userInfo" style="margin-top: 8vh">
-                        <el-card style="max-width: 480px">
+                    <div class="userInfo" style="margin-top: 4vh">
+                        <el-card style="max-width: 280px">
                             <template #header>
                                 <div class="card-header">
                                     <img v-if="store.state.photo != '' && store.state.photo != null"

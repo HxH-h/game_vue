@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import { useStore } from "vuex"
-import { post } from '@/ts/request';
+import { get } from '@/ts/request';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -82,7 +82,13 @@ router.beforeEach(async (to, from, next) => {
     } else {
 
       if (jwt_token) {
+        // 获取用户信息  同时可以验证本地存储的token是否过期
+        let playerInfo = await get('/player/getPlayerInfo', jwt_token)
+        store.commit("setUserInfo", playerInfo.data)
+
+        // 确认不过期即可更新
         store.commit("setToken", jwt_token)
+        
         next()
       } else {
         alert('抱歉，您无权限查看！')

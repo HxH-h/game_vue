@@ -1,19 +1,33 @@
-<template >
+<template>
   <el-container style="align-items: center;
                       justify-content: center;
                       ">
-    <el-card style="width: 70vw; height: 90vh; 
-    background: url('https://game-platform-hxh.oss-cn-beijing.aliyuncs.com/backgroundimg/PKbackground.jpg');
-    background-size:100% 100%;  ">
-      <template #header><slot name="head"></slot></template>
+    <el-card :style="{ '--width': width + 'vw', '--height': height + 'vh' }">
+      <template #header >
+        <slot name="head"></slot>
+      </template>
       <slot name="body"></slot>
     </el-card>
   </el-container>
 </template>
+<script>
+export default {
+  props: {
+    width: {
+      type: Number,
+      default: 80,
+    },
+    height: {
+      type: Number,
+      default: 80,
+    },
+  },
+};
+</script>
 <style>
-.el-card{
+.el-card {
   text-align: center;
+  width: var(--width);
+  height: var(--height);
 }
-
-
 </style>

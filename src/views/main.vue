@@ -6,7 +6,6 @@
 <script setup>
 import Nav from '@/components/Nav.vue';
 import useWsStore from '@/store/WsSocket';
-import { useStore } from 'vuex';
 import { onMounted, onUnmounted, watch } from 'vue';
 import router from '@/router';
 
@@ -20,7 +19,7 @@ onMounted(() => {
     watch(() => wsstore.msg, (newValue, oldValue) => {
         const data = JSON.parse(newValue)
         if (data.event == "reconnect"){
-            router.push({name: "gameAI" , state: {data}})
+            router.push({name: "chessgame" , state: {data}})
         }
     })
 })

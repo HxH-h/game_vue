@@ -1,12 +1,16 @@
 export default{
     state:{
-        opponent: '',
+        opponent_name: '',
+        opponent_level: '',
+        opponent_rank: '',
         turn: '',
         status:''
     },
     mutations:{
         setOpponent(state: any,opponent: any){
-            state.opponent = opponent
+            state.opponent_name = opponent.name
+            state.opponent_level = opponent.level
+            state.opponent_rank = opponent.rank
         },
         setTurn(state: any,turn: any){
             state.turn = turn

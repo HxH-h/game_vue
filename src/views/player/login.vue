@@ -43,7 +43,7 @@ import { reactive, ref } from 'vue'
 import { useStore } from 'vuex';
 import type { FormInstance, FormRules } from 'element-plus'
 import route from '@/router/index';
-import { post } from '@/ts/request';
+import { post , get } from '@/ts/request';
 const ruleFormRef = ref<FormInstance>()
 
 
@@ -71,9 +71,11 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate(async (valid) => {
         let response = await post('/login','' ,ruleForm)
+        let playerInfo = await get('/player/getPlayerInfo', response.data)
         // TODO 判断是否正确  
 
         store.commit('setToken', response.data)
+        store.commit('setUserInfo', playerInfo.data)
         route.push({ name: 'main' })
         if (valid) {
             console.log('submit!')
