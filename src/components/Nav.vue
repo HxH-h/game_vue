@@ -28,11 +28,18 @@
 import { ref, onMounted, reactive } from 'vue'
 import { useStore } from "vuex"
 import route from '../router/index'
+import useWsStore from '@/store/WsSocket';
+
 const activeIndex = ref('1')
 const store = useStore()
+
+const wsstore = useWsStore();
+
+
 function logout() {
     store.dispatch("logout")
     localStorage.removeItem("jwt_token")
+    wsstore.close()
     route.push({ name: 'login' })
 }
 function jumpPage(page) {

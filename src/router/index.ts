@@ -20,16 +20,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/game/GameMode.vue')
       },
       {
-        path: '/gamepk',
-        name: 'gamepk',
-        component: () => import('../views/game/GamePK.vue')
-      },
-      {
-        path: '/gameAI',
-        name: 'gameAI',
-        component: () => import('../views/game/GameAI.vue')
-      },
-      {
         path: '/chessgame',
         name: 'chessgame',
         meta: { isAuth: true },

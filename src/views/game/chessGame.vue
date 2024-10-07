@@ -19,10 +19,21 @@
 
                             </CardItem>
                             <!-- 间隔 -->
-                            <div class="left-gap"></div>
+                            <div class="left-gap">
+                                <el-button type="danger" @click="giveup()">认输</el-button>
+                            </div>
                             <!-- 左下区域 -->
                             <div class="left-bottom">
-
+                                <CardItem :width=12 :height=33>
+                                    <template #head>
+                                        <img :src=store.state.gamer.photo style="width: 100%" />
+                                    </template>
+                                    <template #body>
+                                        <div class="username">{{ store.state.gamer.opponent_name }}</div>
+                                        <div class="level">{{ store.state.gamer.opponent_level }}</div>
+                                        <div class="rank">{{ store.state.gamer.opponent_score }}</div>
+                                    </template>
+                                </CardItem>
                             </div>
                         </div>
                     </el-col>
@@ -37,11 +48,12 @@
             </div>
         </template>
     </CardItem>
+    
 </template>
 <script setup>
 
 import router from '@/router';
-import { onMounted, onUnmounted, ref , watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import CardItem from '@/components/CardItem.vue'
 import { ChessBoard } from '@/componetjs/ChessBoard.js'
 import { Chess } from '@/componetjs/Chess.js'
@@ -50,7 +62,6 @@ import route from '@/router/index'
 import useWsStore from '@/store/WsSocket';
 import { ElMessage } from 'element-plus'
 import { transform } from '@/ts/utils'
-
 
 components: {
     CardItem
@@ -78,6 +89,10 @@ console.log(pagedata.event)
 // 获取websocket
 const wsstore = useWsStore();
 
+// 判断当前页面 匹配中 false 还是 游戏中 true
+var gamestatus = false
+
+
 onMounted(() => {
     if (!pagedata || pagedata.event != "start-matching" && pagedata.event != "startAI" && pagedata.event != "reconnect") {
         // 没有参数 跳转首页
@@ -100,12 +115,14 @@ onMounted(() => {
         const data = JSON.parse(newValue)
         //判断消息类型
         if (data.event === "match_success") {
+            // 游戏开始
+            gamestatus = true
             let msg = JSON.parse(data.match_success)
             store.state.gamer.turn = msg.turn
-            store.state.gamer.opponent_name = msg.opponent
-            store.state.gamer.opponent_rank = msg.opponent_rank
+            store.state.gamer.opponent_name = msg.opponent_name
+            store.state.gamer.opponent_score = msg.opponent_score
             store.state.gamer.opponent_level = msg.opponent_level
-            store.state.gamer.status = msg.status
+            store.state.gamer.opponent_photo = msg.opponent_photo
         } else if (data.event === "InitChess") {
             console.log(data)
             Chesses.InitChessBoard(data.InitChess)
@@ -153,6 +170,19 @@ onMounted(() => {
                 route.push({ name: 'gamemode' })
             }, 150)
 
+        } else if (data.event === "giveUp") {
+            var ret = ''
+            window.removeEventListener('mousemove', MoveHandle)
+            if (data.giveUp == store.state.gamer.turn) {
+                ret = 'you give up ,you defeat'
+            } else {
+                ret = 'your opponter give up ,you victory'
+            }
+            timer.value = setTimeout(() => {
+                alert(ret)
+                gameover()
+                route.push({ name: 'gamemode' })
+            }, 150)
         } else if (data.event === "reconnect") {
             recovery(data.reconnect)
         }
@@ -162,6 +192,8 @@ onMounted(() => {
     wsstore.sendMsg({ event: pagedata.event })
 
 })
+
+
 
 // 渲染棋盘
 function render() {
@@ -220,6 +252,8 @@ function DoNothing() {
 }
 
 function recovery(reconnect) {
+    // 更新为游戏状态
+    gamestatus = true
     // 断线重连需要同步棋盘信息
     store.state.gamer.turn = reconnect.playerturn
     var curTurn = reconnect.curturn
@@ -245,7 +279,20 @@ function gameover() {
     store.state.gamer.status = ''
 }
 
+function giveup() {
+    wsstore.sendMsg({
+        event: "giveUp"
+    })
+}
+
+
+
 onUnmounted(() => {
+    if(gamestatus){
+        giveup()
+    }else{
+        wsstore.sendMsg({ event: "stop-matching" })
+    }
     // 页面卸载时，取消对鼠标的监听
     window.removeEventListener('mousemove', MoveHandle)
 

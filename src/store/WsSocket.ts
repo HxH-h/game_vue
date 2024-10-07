@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useStore } from 'vuex';
 
 const url = 'ws://localhost:8080/websocket'
-
+// TODO 断线重连
 const useWsStore = defineStore('websocket', {
 
     state: () => ({
@@ -83,6 +83,7 @@ const useWsStore = defineStore('websocket', {
         close() {
             if (this.ws) {
                 this.ws.close()
+                this.ws = undefined
             }
         }
     }

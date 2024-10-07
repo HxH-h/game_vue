@@ -8,8 +8,11 @@ import Nav from '@/components/Nav.vue';
 import useWsStore from '@/store/WsSocket';
 import { onMounted, onUnmounted, watch } from 'vue';
 import router from '@/router';
+import { useStore } from "vuex"
+
 
 const wsstore = useWsStore();
+const store = useStore()
 
 // 对战基于该页面 直接在该页面开启websocket
 onMounted(() => {
@@ -20,6 +23,11 @@ onMounted(() => {
         const data = JSON.parse(newValue)
         if (data.event == "reconnect"){
             router.push({name: "chessgame" , state: {data}})
+        }else if(data.event == "exist"){
+            wsstore.close()
+            store.dispatch("logout")
+            localStorage.removeItem("jwt_token")
+            router.push({ name: 'login' })
         }
     })
 })
