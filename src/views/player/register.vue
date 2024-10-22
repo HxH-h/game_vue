@@ -51,7 +51,7 @@
 
 </template>
 <script lang="ts" setup>
-
+// TODO 密码两次不一致会报错
 import { reactive, ref , onMounted} from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import {get,post} from '../../ts/request'

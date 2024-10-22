@@ -9,6 +9,11 @@ const routes: Array<RouteRecordRaw> = [
     meta: { isAuth: true },
   },
   {
+    path: '/notfound',
+    name: 'notfound',
+    component: () => import('../views/404.vue')
+  },
+  {
     path: '/main',
     name: 'main',
     meta: { isAuth: true },
@@ -50,6 +55,10 @@ const routes: Array<RouteRecordRaw> = [
     name: 'register',
     component: () => import('../views/player/register.vue')
   },
+  {
+    path : '/*:pathMatch(.*)',
+    redirect: '/notfound'
+  }
   
 
 ]
@@ -61,12 +70,12 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const store = useStore()
-  const jwt_token = localStorage.getItem("jwt_token")
+  const jwt_token = localStorage.getItem("access_token")
   
 
   //如果路由需要跳转
   if (to.meta.isAuth) {
-    if (store.state.token != '') {
+    if (store.state.accessToken != '') {
       
       next()  //放行
     } else {
@@ -74,10 +83,16 @@ router.beforeEach(async (to, from, next) => {
       if (jwt_token) {
         // 获取用户信息  同时可以验证本地存储的token是否过期
         let playerInfo = await get('/player/getPlayerInfo', jwt_token)
+        if (playerInfo.code != 1031) {
+          alert('token过期')
+          next('/login')
+          return
+        }
+        
         store.commit("setUserInfo", playerInfo.data)
 
         // 确认不过期即可更新
-        store.commit("setToken", jwt_token)
+        store.commit("setAccessToken", jwt_token)
         
         next()
       } else {

@@ -17,7 +17,7 @@ const useWsStore = defineStore('websocket', {
         createWs() {
             const store = useStore();
             try {
-                this.ws = new WebSocket(url + '/' + store.state.token)
+                this.ws = new WebSocket(url + '/' + store.state.accessToken)
                 this.initWs()
             } catch (error) {
                 console.log(error)

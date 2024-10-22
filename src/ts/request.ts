@@ -8,7 +8,7 @@ async function get(path: string, authorization: string,...params: any) {
         url += ('/' + param) 
     
     }
-    
+
     return await service({
         method: 'get',
         url: url,

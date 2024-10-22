@@ -5,7 +5,7 @@
 /public
 /babel.config.js
 /package-lock.json
-
+/src/assets
 
 # local env files
 .env.local

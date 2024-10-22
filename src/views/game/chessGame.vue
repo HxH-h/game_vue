@@ -63,6 +63,8 @@ import useWsStore from '@/store/WsSocket';
 import { ElMessage } from 'element-plus'
 import { transform } from '@/ts/utils'
 
+// TODO 判断玩家是否下在同一个地方
+
 components: {
     CardItem
 }

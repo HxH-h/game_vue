@@ -1,5 +1,5 @@
 <template>
-    <CardItem :width=80 :height=90>
+    <CardItem :width=80 :height=90 >
         <template #head>
             <img />
         </template>
@@ -133,9 +133,9 @@ function beforeAvatarUpload(file) {
 
 onMounted(async () => {
 
-    let hisnum = await get('/player/getHisNum', store.state.token)
-    let inforesp = await get('/player/getPlayerInfo', store.state.token)
-    let historyresp = await get('/player/getGameHistory/1/10', store.state.token)
+    let hisnum = await get('/player/getHisNum', store.state.accessToken)
+    let inforesp = await get('/player/getPlayerInfo', store.state.accessToken)
+    let historyresp = await get('/player/getGameHistory/1/10', store.state.accessToken)
 
     if (inforesp.code == 4001 || historyresp.code == 4001 || hisnum.code == 4001) {
         ElMessage({
@@ -159,7 +159,7 @@ onMounted(async () => {
 
 })
 async function getHistory(page) {
-    let historyresp = await get('/player/getGameHistory/' + page + '/10', store.state.token)
+    let historyresp = await get('/player/getGameHistory/' + page + '/10', store.state.accessToken)
     if(historyresp.code == 4001){
         ElMessage({
             message: 'your request are blocked please wait sometime',

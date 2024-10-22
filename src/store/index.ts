@@ -7,14 +7,21 @@ export default createStore({
     level: '',
     rank: '',
     photo: '',
-    token: '',
+    accessToken: '',
+    refreshToken: '',
   },
   getters: {
   },
   mutations: {
     setToken(state, token) {
-      state.token = token
-      localStorage.setItem("jwt_token",token)
+      state.accessToken = token.accessToken
+      state.refreshToken = token.refreshToken
+      localStorage.setItem("access_token",token.accessToken)
+      localStorage.setItem("refresh_token",token.refreshToken)
+    },
+    setAccessToken(state, accessToken) {
+      state.accessToken = accessToken
+      localStorage.setItem("access_token",accessToken)
     },
     setUserInfo(state, userInfo) {
       state.username = userInfo.username
@@ -32,7 +39,8 @@ export default createStore({
       state.level = ''
       state.rank = ''
       state.photo = ''
-      state.token = ''
+      state.accessToken = ''
+      state.refreshToken = ''
     }
   },
   actions: {

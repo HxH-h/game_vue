@@ -2,7 +2,9 @@
   <el-container style="align-items: center;
                       justify-content: center;
                       ">
-    <el-card :style="{ '--width': width + 'vw', '--height': height + 'vh' }">
+    <el-card :style="{ '--width': width + 'vw', 
+    '--height': height + 'vh',
+    '--background': 'url(' + background + ')' }">
       <template #header >
         <slot name="head"></slot>
       </template>
@@ -21,6 +23,9 @@ export default {
       type: Number,
       default: 80,
     },
+    background: {
+      type: String
+    }
   },
 };
 </script>
@@ -29,5 +34,7 @@ export default {
   text-align: center;
   width: var(--width);
   height: var(--height);
+  background: var(--background);
+  background-size: 100% 100%;
 }
 </style>
