@@ -243,6 +243,11 @@ function ClickHandle(e) {
 
     //下棋
     var pos = Chesses.setChess(1);
+
+    if (!pos){
+        ElMessage.error('this position already has chess')
+        return
+    }
     wsstore.sendMsg({
         event: "down",
         position: pos

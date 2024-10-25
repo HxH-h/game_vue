@@ -71,7 +71,12 @@ export class Chess extends Game_Obj{
         if(role<1||role>2){
             return
         }
-        //this.chessAry[this.curY][this.curX]=role
+    
+        if(this.chessAry[this.curY][this.curX]!=0 &&
+            this.chessAry[this.curY][this.curX]!= -1
+        ){
+            return
+        }
         var pos={
             x: this.curX,
             y: this.curY
