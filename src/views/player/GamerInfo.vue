@@ -45,9 +45,10 @@
                                 style="width: 100%">
 
                                 <el-table-column label="序号" type="index" width="45" />
-                                <el-table-column prop="first" label="先手" width="180" />
-                                <el-table-column prop="second" label="后手" width="180" />
+                                <el-table-column prop="first" label="先手" width="150" />
+                                <el-table-column prop="second" label="后手" width="150" />
                                 <el-table-column prop="vic" label="胜负" width="45" />
+                                <el-table-column prop="score" label = "得分" width="90" />
                                 <el-table-column prop="turn" label="回合数" width="45" />
                                 <el-table-column prop="time" label="对局时间" />
 
