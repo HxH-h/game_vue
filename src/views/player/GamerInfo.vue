@@ -8,7 +8,7 @@
                 <el-col :span="6">
                     <div class="grid-content ep-bg-purple" />
                     <div class="userInfo" style="margin-top: 4vh">
-                        <el-card style="max-width: 280px">
+                        <el-card style="max-width: 280px;height: 70vh;">
                             <template #header>
                                 <div class="card-header">
                                     <img v-if="store.state.photo != '' && store.state.photo != null"

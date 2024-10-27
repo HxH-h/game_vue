@@ -3,7 +3,7 @@
         <el-menu :default-active="route.currentRoute.name" class="el-menu-demo" mode="horizontal" :ellipsis="false"
             style="background-color: transparent;" @select="">
             <el-menu-item style="width: 5vw;margin-left: 10vw">
-                <img style="width: 5vw; background-color: transparent ;" alt="Element logo" />
+                <img src="../assets/logo.png" style="width: 5vw; background-color: transparent ;" alt="Element logo" />
             </el-menu-item>
 
             <el-menu-item index="0" style="margin-left: 10vw;color: white"
@@ -17,8 +17,8 @@
             <el-sub-menu index="3" v-if="true">
                 <template #title>{{ store.state.username }}</template>
                 <el-menu-item index="3-1" @click="jumpPage('gamerinfo')">个人信息</el-menu-item>
-                <el-menu-item index="3-2" @click="logout">登出</el-menu-item>
-                <el-menu-item index="3-3">item three</el-menu-item>
+                <el-menu-item index="3-2" @click="jumpPage('dataAnalysis')">数据分析</el-menu-item>
+                <el-menu-item index="3-3" @click="logout">登出</el-menu-item>
             </el-sub-menu>
             <el-menu-item index="3" @click="jumpPage('login')" v-else>登录</el-menu-item>
         </el-menu>
@@ -37,13 +37,13 @@ const wsstore = useWsStore();
 
 
 function logout() {
-    store.dispatch("logout")
+    store.commit("logout")
     localStorage.removeItem("jwt_token")
     wsstore.close()
     route.push({ name: 'login' })
 }
 function jumpPage(page) {
-    route.push({ name: page })
+    route.push({ path: '/' + page })
 }
 
 </script>

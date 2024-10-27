@@ -22,6 +22,7 @@ export default createStore({
     setAccessToken(state, accessToken) {
       state.accessToken = accessToken
       localStorage.setItem("access_token",accessToken)
+
     },
     setUserInfo(state, userInfo) {
       state.username = userInfo.username
@@ -41,6 +42,8 @@ export default createStore({
       state.photo = ''
       state.accessToken = ''
       state.refreshToken = ''
+      localStorage.removeItem("access_token")
+      localStorage.removeItem("refresh_token")
     }
   },
   actions: {

@@ -6,7 +6,6 @@
                     <el-col :span="4" class="left-column">
                         <div class="left-area">
                             <!-- 左上区域 -->
-                            <div class="left-top">左上区域</div>
                             <CardItem :width=12 :height=33>
                                 <template #head>
                                     <img :src=store.state.photo style="width: 100%" />
@@ -42,13 +41,13 @@
                         <canvas id="can" ref="canvas" :width="canvasSize" :height="canvasSize"></canvas>
                     </el-col>
                     <el-col :span="6" class="right-column">
-                        <div class="right-area">右部区域</div>
+
                     </el-col>
                 </el-row>
             </div>
         </template>
     </CardItem>
-    
+
 </template>
 <script setup>
 
@@ -60,10 +59,10 @@ import { Chess } from '@/componetjs/Chess.js'
 import { useStore } from "vuex"
 import route from '@/router/index'
 import useWsStore from '@/store/WsSocket';
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElLoading } from 'element-plus'
 import { transform } from '@/ts/utils'
 
-// TODO 判断玩家是否下在同一个地方
+
 
 components: {
     CardItem
@@ -94,6 +93,9 @@ const wsstore = useWsStore();
 // 判断当前页面 匹配中 false 还是 游戏中 true
 var gamestatus = false
 
+ // 如果是匹配 则匹配时需要展示匹配动画
+ var loadingInstance
+
 
 onMounted(() => {
     if (!pagedata || pagedata.event != "start-matching" && pagedata.event != "startAI" && pagedata.event != "reconnect") {
@@ -118,6 +120,9 @@ onMounted(() => {
         //判断消息类型
         if (data.event === "match_success") {
             // 游戏开始
+            if(loadingInstance){
+                loadingInstance.close()                
+            }
             gamestatus = true
             let msg = JSON.parse(data.match_success)
             store.state.gamer.turn = msg.turn
@@ -190,6 +195,15 @@ onMounted(() => {
         }
     })
 
+    if (pagedata.event == 'start-matching') {
+        const options = {
+            text: '匹配中',
+            background: 'rgba(255,255,255,0.9)'
+        }
+        // 如果是匹配 则匹配时需要展示匹配动画
+        loadingInstance = ElLoading.service(options)
+    }
+
     // 发送开始请求
     wsstore.sendMsg({ event: pagedata.event })
 
@@ -244,7 +258,7 @@ function ClickHandle(e) {
     //下棋
     var pos = Chesses.setChess(1);
 
-    if (!pos){
+    if (!pos) {
         ElMessage.error('this position already has chess')
         return
     }
@@ -295,10 +309,13 @@ function giveup() {
 
 
 onUnmounted(() => {
-    if(gamestatus){
+    if (gamestatus) {
         giveup()
-    }else{
+    } else {
         wsstore.sendMsg({ event: "stop-matching" })
+        if (loadingInstance) {
+            loadingInstance.close()
+        }
     }
     // 页面卸载时，取消对鼠标的监听
     window.removeEventListener('mousemove', MoveHandle)

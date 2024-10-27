@@ -130,4 +130,7 @@ body {
     font-family:LiSu;
     font-size: 2vh;
 }
+.el-button{
+    border-color: transparent !important;
+}
 </style>

@@ -1,25 +1,23 @@
 <template>
-    <CardItem :background = backgroundImg>
+    <CardItem :background=backgroundImg>
         <template #head>
             <img />
         </template>
-        <template #body >
-            
-                <el-row :gutter="20">
-                    <el-col :span="6" :offset="9">
-                        <div class="grid-content ep-bg-purple">
-                            <el-button @click="jump('chessgame', 'startAI')">人机对战</el-button>
-                        </div>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :span="6" :offset="9">
-                        <div class="grid-content ep-bg-purple">
-                            <el-button @click="jump('chessgame', 'start-matching')">多人对战</el-button>
-                        </div>
-                    </el-col>
-                </el-row>
-                
+        <template #body>
+
+            <el-row :gutter="20">
+                <el-col :span="6" :offset="1">
+                    <div class="grid-content ep-bg-purple">
+                        <el-button @click="jump('chessgame', 'startAI')">人机对战</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="6" :offset="10">
+                    <div class="grid-content ep-bg-purple">
+                        <el-button @click="jump('chessgame', 'start-matching')">多人对战</el-button>
+                    </div>
+                </el-col>
+            </el-row>
+
         </template>
     </CardItem>
 
@@ -44,7 +42,7 @@ export default {
         return {
             jumpPage,
             jump,
-            backgroundImg : require('../../assets/gamemode.png')
+            backgroundImg: require('../../assets/gamemode.png')
         }
     }
 
@@ -52,7 +50,6 @@ export default {
 
 </script>
 <style scoped>
-
 .el-row {
     margin-bottom: 20px;
 }
@@ -69,4 +66,11 @@ export default {
     border-radius: 4px;
     min-height: 36px;
 }
+.el-button:hover {
+    background: radial-gradient(circle at center, white 0%,black 60%, black 70%) !important;
+    color: white !important;
+    font-weight: bold;
+    border-color: black !important;
+  }
+
 </style>

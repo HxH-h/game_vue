@@ -2,17 +2,26 @@ import { defineStore } from 'pinia'
 import { useStore } from 'vuex';
 
 const url = 'ws://localhost:8080/websocket'
-// TODO 断线重连
+
 const useWsStore = defineStore('websocket', {
 
     state: () => ({
         ws: undefined as WebSocket | undefined,
         msg: '',
-        heartCheckTime: 40000,
+        // 收到相应到下一次检测的时间差
+        heartCheckTime: 4000,
         heartBeat: undefined as any | undefined,
         disConnection: undefined as any | undefined,
+        reConnection: undefined as any | undefined,
+        // 最大超时时间
         timeout: 50000,
-    }),
+        // 重连次数
+        reconCnt: 0,
+        // 重连限制
+        reconLim: 5,
+        // 防止重复重连
+        reconLock: false
+        }),
     actions: {
         createWs() {
             const store = useStore();
@@ -21,6 +30,7 @@ const useWsStore = defineStore('websocket', {
                 this.initWs()
             } catch (error) {
                 console.log(error)
+                this.reconnect()
             }
         },
         initWs() {
@@ -69,19 +79,38 @@ const useWsStore = defineStore('websocket', {
                 // 超时断连
                 this.disConnection = setTimeout(() => {
                     this.close()
+                    this.reconnect()
                 }, this.timeout)
             }, this.heartCheckTime)
 
+        },
+        reconnect(){
+            // 防止重复重连
+            if(this.reconLock) return
+            // 清除上一次重连定时器
+            if(this.reConnection) clearTimeout(this.reConnection)
+            // 重连次数限制
+            if(this.reconCnt >= this.reconLim) return
+            // 开启重连
+            console.log("尝试重连")
+            this.reconLock = true
+            this.reconCnt++
+            this.reConnection = setTimeout(() => {
+                this.reconLock = false
+                this.createWs()
+            }, 5000)
         },
         clearTime() {
             if (this.heartBeat) clearTimeout(this.heartBeat)
             if (this.disConnection) clearTimeout(this.disConnection)
         },
+
         getMsg() {
             return this.msg
         },
         close() {
             if (this.ws) {
+                this.clearTime()
                 this.ws.close()
                 this.ws = undefined
             }

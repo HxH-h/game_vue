@@ -1,10 +1,10 @@
 <template>
-    <CardItem>
+    <CardItem :width="90" :height="90" :background="backgroundImg">
         <template #head>
             <img src="https://game-platform-hxh.oss-cn-beijing.aliyuncs.com/history.png" style="margin-left: -30vw;" />
         </template>
         <template #body>
-            <canvas id="can" ref="canvas" :width="canvasSize" :height="canvasSize" style="margin-top: 3vh;"></canvas>
+            <canvas id="can" ref="canvas" :width="canvasSize" :height="canvasSize" style="margin-top: 3vh; margin-left: -8vw;"></canvas>
         </template>
     </CardItem>
 </template>
@@ -17,7 +17,7 @@ export default {
         CardItem
     },
     setup() {
-        const canvasSize = 600;
+        const canvasSize = 500;
         const size = 19;
         const margin = 30;
         const gridSize = (canvasSize - 2 * margin) / (size - 1);
@@ -99,7 +99,8 @@ export default {
 
         return {
             canvasSize,
-            canvas
+            canvas,
+            backgroundImg: require('../../assets/history.png')
         }
     }
 }

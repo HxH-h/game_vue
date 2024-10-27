@@ -1,60 +1,63 @@
 <template>
-    <el-container style="align-items: center;
+    <div id="building">
+        <el-container style="align-items: center;
                       justify-content: center;
                       ">
-        <el-header style="height: 20vh;"></el-header>
-        <el-card style="max-width: 360px; text-align: center;">
-            <template #header>
-                <div class="card-header">
-                    <span>注册</span>
-                </div>
-            </template>
-            <el-form ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" status-icon :rules="rules"
-                label-width="auto" class="demo-ruleForm">
-                <el-form-item label="username" prop="username">
-                    <el-input v-model="ruleForm.username" type="text" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="Email" prop="email">
-                    <el-input v-model="ruleForm.email" type="text" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="Password" prop="password">
-                    <el-input v-model="ruleForm.password" type="password" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="Confirm" prop="checkPass">
-                    <el-input v-model="ruleForm.checkPass" type="password" autocomplete="off" />
-                </el-form-item>
-                <el-form-item label="Captcha" prop="captcha">
-                    <el-input v-model="ruleForm.captcha" type="text" autocomplete="off" >
-                        <template #append>
-                            
-                            <img :src="imgBase64" @click="getCaptcha" style="width: 100%; height: 100%;" />
-                        </template>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="Code" prop="code">
-                    <el-input v-model="ruleForm.code" type="text" autocomplete="off" >
-                        <template #append>
-                            <el-button @click="getCode" :disabled="ruleForm.email != '' && ruleForm.captcha != '' ? false:true">Get Code</el-button>
-                        </template>
-                    </el-input>
-                </el-form-item>
+            <el-header style="height: 20vh;"></el-header>
+            <el-card style="max-width: 360px; text-align: center;">
+                <template #header>
+                    <div class="card-header">
+                        <span>注册</span>
+                    </div>
+                </template>
+                <el-form ref="ruleFormRef"  :model="ruleForm" status-icon :rules="rules"
+                    label-width="auto" class="demo-ruleForm">
+                    <el-form-item label="username" prop="username">
+                        <el-input v-model="ruleForm.username" type="text" autocomplete="off" />
+                    </el-form-item>
+                    <el-form-item label="Email" prop="email">
+                        <el-input v-model="ruleForm.email" type="text" autocomplete="off" />
+                    </el-form-item>
+                    <el-form-item label="Password" prop="password">
+                        <el-input v-model="ruleForm.password" type="password" autocomplete="off" />
+                    </el-form-item>
+                    <el-form-item label="Confirm" prop="checkPass">
+                        <el-input v-model="ruleForm.checkPass" type="password" autocomplete="off" />
+                    </el-form-item>
+                    <el-form-item label="Captcha" prop="captcha">
+                        <el-input v-model="ruleForm.captcha" type="text" autocomplete="off">
+                            <template #append>
+
+                                <img :src="imgBase64" @click="getCaptcha" style="width: 100%; height: 100%;" />
+                            </template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item label="Code" prop="code">
+                        <el-input v-model="ruleForm.code" type="text" autocomplete="off">
+                            <template #append>
+                                <el-button @click="getCode"
+                                    :disabled="ruleForm.email != '' && ruleForm.captcha != '' ? false : true">Get
+                                    Code</el-button>
+                            </template>
+                        </el-input>
+                    </el-form-item>
 
 
-            </el-form>
-            <template #footer>
-                <el-button type="primary" @click="submitForm(ruleFormRef)">
-                    Submit
-                </el-button>
-            </template>
-        </el-card>
-    </el-container>
-
+                </el-form>
+                <template #footer>
+                    <el-button type="primary" @click="submitForm(ruleFormRef)">
+                        Submit
+                    </el-button>
+                </template>
+            </el-card>
+        </el-container>
+    </div>
 </template>
 <script lang="ts" setup>
 // TODO 密码两次不一致会报错
-import { reactive, ref , onMounted} from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import {get,post} from '../../ts/request'
+import { get, post } from '../../ts/request'
 import router from '@/router';
 
 const ruleFormRef = ref<FormInstance>()
@@ -69,11 +72,11 @@ const validateUsername = (rule: any, value: any, callback: any) => {
 
     if (value === '') {
         callback(new Error('Please input the username'))
-    }else if (!reg.test(value)) {
+    } else if (!reg.test(value)) {
         callback(new Error('The username is invalid'))
-    }else if(value.length < 3 || value.length > 100){
+    } else if (value.length < 3 || value.length > 100) {
         callback(new Error('The username length is invalid'))
-    }else {
+    } else {
         callback()
     }
 }
@@ -83,9 +86,9 @@ const validateEmail = (rule: any, value: any, callback: any) => {
 
     if (value === '') {
         callback(new Error('Please input the email'))
-    }else if (!reg.test(value)) {
+    } else if (!reg.test(value)) {
         callback(new Error('The email is invalid'))
-    }else{
+    } else {
         callback()
     }
 }
@@ -93,9 +96,9 @@ const validateCode = (rule: any, value: any, callback: any) => {
 
     if (value === '') {
         callback(new Error('Please input the code'))
-    }else if (value.length !== 6) {
+    } else if (value.length !== 6) {
         callback(new Error('The code length is invalid'))
-    }else{
+    } else {
         callback()
     }
 }
@@ -148,7 +151,7 @@ const ruleForm = reactive({
 })
 
 const rules = reactive<FormRules<typeof ruleForm>>({
-    username: [{validator: validateUsername, trigger: 'blur'}],
+    username: [{ validator: validateUsername, trigger: 'blur' }],
     email: [{ validator: validateEmail, trigger: 'blur' }],
     password: [{ validator: validatePass, trigger: 'blur' }],
     checkPass: [{ validator: validatePass2, trigger: 'blur' }],
@@ -160,7 +163,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            post('/register/register','',ruleForm)
+            post('/register/register', '', ruleForm)
             console.log('submit!')
             router.push({ name: 'login' })
         } else {
@@ -169,13 +172,33 @@ const submitForm = (formEl: FormInstance | undefined) => {
     })
 }
 
-function getCode(){
-    get('/register/genCode','',ruleForm.email,ruleForm.captcha)
+function getCode() {
+    get('/register/genCode', '', ruleForm.email, ruleForm.captcha)
 }
-async function  getCaptcha(){
-    imgBase64.value =await get('/register/genCaptcha','')
+async function getCaptcha() {
+    imgBase64.value = await get('/register/genCaptcha', '')
 
 }
 
 </script>
-<style></style>
+<style scoped>
+
+#building {
+    background: url("../../assets/register.png");
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-size: 100% 100%;
+}
+.demo-ruleForm{
+    max-width: 600px;
+    background-color: transparent !important;
+}
+.el-card {
+    background-color: transparent;
+    border-color: transparent;
+    margin-top: -5vh;
+    margin-left: 13vw;
+}
+
+</style>

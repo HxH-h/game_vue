@@ -18,10 +18,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'main',
     meta: { isAuth: true },
     component: () => import('../views/main.vue'),
+    redirect: '/gamemode',
     children: [
       {
         path: '/gamemode',
         name: 'gamemode',
+        meta: { isAuth: true },
         component: () => import('../views/game/GameMode.vue')
       },
       {
@@ -41,6 +43,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'chesshistory',
         meta: { isAuth: true },
         component: () => import('../views/player/ChessHistory.vue')
+      },
+      {
+        path: '/dataAnalysis',
+        name: 'dataAnalysis',
+        meta: { isAuth: true },
+        component: () => import('../views/player/DataAnalysis.vue')
       }
     ]
   },
@@ -56,7 +64,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/player/register.vue')
   },
   {
-    path : '/*:pathMatch(.*)',
+    path : '/:pathMatch(.*)*',
     redirect: '/notfound'
   }
   
@@ -79,7 +87,6 @@ router.beforeEach(async (to, from, next) => {
       
       next()  //放行
     } else {
-
       if (jwt_token) {
         // 获取用户信息  同时可以验证本地存储的token是否过期
         let playerInfo = await get('/player/getPlayerInfo', jwt_token)
@@ -88,15 +95,20 @@ router.beforeEach(async (to, from, next) => {
           next('/login')
           return
         }
-        
+        // 更新用户信息
         store.commit("setUserInfo", playerInfo.data)
 
-        // 确认不过期即可更新
-        store.commit("setAccessToken", jwt_token)
+        
+        // 判断accessToken是否被重置
+        // 如果store.accessToken不为空，说明过期被拦截器刷新重置了
+        // 如果store.accessToken为空，说明没有被拦截器重置，说明token没有过期 需要给store赋值
+        if(store.state.accessToken == ''){
+          store.commit('setAccessToken',jwt_token)
+        }
         
         next()
       } else {
-        alert('抱歉，您无权限查看！')
+        alert('请先登录！')
         next('/login')
       }
 
