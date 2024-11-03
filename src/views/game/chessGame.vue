@@ -205,7 +205,11 @@ onMounted(() => {
     }
 
     // 发送开始请求
-    wsstore.sendMsg({ event: pagedata.event })
+    if (pagedata.event == 'startAI'){
+        wsstore.sendMsg({ event: pagedata.event , level: pagedata.level })
+    }else{
+        wsstore.sendMsg({ event: pagedata.event })
+    }
 
 })
 
