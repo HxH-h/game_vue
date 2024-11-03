@@ -54,11 +54,12 @@
     </div>
 </template>
 <script lang="ts" setup>
-// TODO 密码两次不一致会报错
 import { reactive, ref, onMounted } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { get, post } from '../../ts/request'
 import router from '@/router';
+import { ElMessage } from 'element-plus'
+
 
 const ruleFormRef = ref<FormInstance>()
 const imgBase64 = ref('')
@@ -102,22 +103,6 @@ const validateCode = (rule: any, value: any, callback: any) => {
         callback()
     }
 }
-const checkAge = (rule: any, value: any, callback: any) => {
-    if (!value) {
-        return callback(new Error('Please input the age'))
-    }
-    setTimeout(() => {
-        if (!Number.isInteger(value)) {
-            callback(new Error('Please input digits'))
-        } else {
-            if (value < 18) {
-                callback(new Error('Age must be greater than 18'))
-            } else {
-                callback()
-            }
-        }
-    }, 1000)
-}
 
 const validatePass = (rule: any, value: any, callback: any) => {
     if (value === '') {
@@ -125,15 +110,17 @@ const validatePass = (rule: any, value: any, callback: any) => {
     } else {
         if (ruleForm.checkPass !== '') {
             if (!ruleFormRef.value) return
-            ruleFormRef.value.validateField('checkPass')
+            ruleFormRef.value.validateField('checkPass').catch((error: any) => {
+                // 接收抛出的异常 否则element-plus上层也不会接收，最终报错
+             })
         }
         callback()
     }
 }
 const validatePass2 = (rule: any, value: any, callback: any) => {
-    if (value === '') {
+    if (value == '') {
         callback(new Error('Please input the password again'))
-    } else if (value !== ruleForm.password) {
+    } else if (value != ruleForm.password) {
         callback(new Error("Two inputs don't match!"))
     } else {
         callback()
@@ -172,8 +159,19 @@ const submitForm = (formEl: FormInstance | undefined) => {
     })
 }
 
-function getCode() {
-    get('/register/genCode', '', ruleForm.email, ruleForm.captcha)
+async function getCode() {
+    let response = await get('/register/genCode', '', ruleForm.email, ruleForm.captcha)
+    if (response.code == 1021){
+        ElMessage({
+            type: 'success',
+            message: response.msg
+        })
+    }else{
+        ElMessage({
+            type: 'error',
+            message: response.msg
+        })
+    }
 }
 async function getCaptcha() {
     imgBase64.value = await get('/register/genCaptcha', '')

@@ -39,15 +39,32 @@
 
 <script lang="ts" setup>
 
-import { reactive, ref } from 'vue'
+import {onMounted, reactive, ref , onUnmounted } from 'vue'
 import { useStore } from 'vuex';
 import type { FormInstance, FormRules } from 'element-plus'
 import route from '@/router/index';
 import { post, get } from '@/ts/request';
 const ruleFormRef = ref<FormInstance>()
+import { ElMessage } from 'element-plus'
 
 
 const store = useStore();
+
+// 支持enter 提交表单
+onMounted(() => {
+    window.addEventListener('keydown' , (event: any) => {
+        if(event.key === 'Enter'){
+            submitForm(ruleFormRef.value)
+        }
+    })
+})
+onUnmounted(() => {
+    window.removeEventListener('keydown' , (event: any) => {
+        if(event.key === 'Enter'){
+            submitForm(ruleFormRef.value)
+        }
+    })
+})
 
 const validatePass = (rule: any, value: any, callback: any) => {
     if (value === '' || !value) {
@@ -83,8 +100,16 @@ const submitForm = (formEl: FormInstance | undefined) => {
 
         if (valid) {
             let response = await post('/login', '', ruleForm)
-            let playerInfo = await get('/player/getPlayerInfo', response.data.accessToken)
-            // TODO 判断是否正确  
+            if (response.code != 1001){
+                ElMessage({
+                    message: response.msg,
+                    grouping: true,
+                    offset: 50,
+                    type: 'error',
+                })
+                return
+            }
+            let playerInfo = await get('/player/getPlayerInfo', response.data.accessToken)  
 
             store.commit('setToken', response.data)
             store.commit('setUserInfo', playerInfo.data)

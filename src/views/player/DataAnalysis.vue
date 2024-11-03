@@ -1,130 +1,51 @@
 <template>
-    <el-date-picker v-model="date" type="daterange" range-separator="-" :start-placeholder="defaultStart"
-        :end-placeholder="defaultEnd" size="default" 
-        :disabled-date="pickerOptions" @change="durationChange" />
+    <el-date-picker v-model="date" type="daterange" range-separator="-" :start-placeholder="Start"
+        :end-placeholder="End" size="default" 
+        :disabled-date="pickerOptions" @change="durationChange"
+         @calendar-change="canlenderChange" @visible-change = "visibleChange" />
+    <GameCnt :start="Start" :end="End" />
+    <ScoreHistory/>
 
-
-    <div ref="gameCnt" class="chart"></div>
 </template>
 
 <script lang="ts" setup>
-// TODO 组件化
-import * as echarts from 'echarts';
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useStore } from "vuex"
-import { get } from '../../ts/request'
+import GameCnt from '@/components/Statistics/GameCnt.vue';
+import ScoreHistory from "@/components/Statistics/ScoreHistory.vue";
 
 const store = useStore()
 
-
 const date = ref('')
-const defaultStart = ref('')
-const defaultEnd = ref('')
+const Start = ref('')
+const End = ref('')
 
-// 禁用今天之后的日期
-function pickerOptions(time:any) {
-    return time.getTime() > Date.now();
-}
+const tempdate = ref()
 
 
-// echarts关联
-const gameCnt = ref(null)
-var gameCntChart: any = null
-// 数据集
-const gamecnt = ref([])
+// 初始化日期
+initDates()
 
-onMounted(async () => {
-    // 初始化日期
-    initDates()
-    // 获取游戏场数
-    let resp = await get('/analysis/gameCnt', store.state.accessToken, defaultStart.value, defaultEnd.value)
-    let ret = getGameCnt(resp.data)
-    gameCntChart = echarts.init(gameCnt.value)
-    rendeCnt(ret.xAxis, ret.yCnt, ret.yVic)
-})
-
-
-function rendeCnt(x: any, yCnt: any, yVic: any) {
-
-    const option = {
-        title: {
-            text: '场数统计',
-            x: 'left',
-            y: 'top',
-            textStyle: {
-                fontFamily: 'Arial, Verdana, sans...',
-                fontSize: 24,
-
-            },
-        },
-        legend: {
-            data: ['总场数', '胜场数'],
-            x: 'center',
-            y: 'top'
-        },
-        xAxis: {
-            type: 'category',
-            data: x,
-            axisLabel: {
-                interval: 0,
-                rotate: -40
-            }
-        },
-        yAxis: {
-            type: 'value',
-            minInterval: 1,
-        },
-        series: [
-            {
-                name: '总场数',
-                data: yCnt,
-                type: 'line',
-                label: {
-                    normal: {
-                        show: true,
-                        //position: 'bottom', // 文字位置
-                        // 显示的文字
-                        formatter: '{c}',
-                        textStyle: {
-                            color: '#000' // 文字颜色
-                        }
-                    }
-                },
-
-            },
-            {
-                name: '胜场数',
-                data: yVic,
-                type: 'line',
-                label: {
-                    normal: {
-                        show: true,
-                        position: 'bottom', // 文字位置
-                        // 显示的文字
-                        formatter: '{c}',
-                        textStyle: {
-                            color: '#000' // 文字颜色
-                        }
-                    }
-                },
-            }
-        ]
-    }
-    gameCntChart.setOption(option)
-}
-async function durationChange() {
+// 确定日期时触发
+function durationChange() {
     const formatDate = (date: Date): string => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
-    let start = formatDate(new Date(date.value[0]))
-    let end = formatDate(new Date(date.value[1]))
-    let resp = await get('/analysis/gameCnt', store.state.accessToken, start, end)
-    let ret = getGameCnt(resp.data)
-    rendeCnt(ret.xAxis, ret.yCnt, ret.yVic)
+    Start.value = formatDate(new Date(date.value[0]))
+    End.value = formatDate(new Date(date.value[1]))
 }
+
+// 日期改变时触发
+function canlenderChange(val: [Date, null | Date]){
+    tempdate.value = new Date(val[0])
+} 
+function visibleChange(val: boolean){
+    if (val) tempdate.value = null
+}
+
 function initDates() {
     // 获取当前日期
     const now = new Date();
@@ -140,24 +61,19 @@ function initDates() {
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
-    defaultStart.value = formatDate(oneWeekAgo)
-    defaultEnd.value = formatDate(now)
+    Start.value = formatDate(oneWeekAgo)
+    End.value = formatDate(now)
 }
-
-function getGameCnt(data: any) {
-    // 处理数据
-    const xAxis: string[] = [];
-    const yCnt: number[] = [];
-    const yVic: number[] = [];
-
-    data.forEach(item => {
-        xAxis.push(item.date);
-        yCnt.push(item.cnt ?? 0);
-        yVic.push(item.vic);
-    });
-    return { xAxis, yCnt, yVic };
+// 禁用今天之后的日期
+function pickerOptions(time:any) {
+    if(!tempdate.value){
+        return time.getTime() > Date.now()
+    }else{
+        return time.getTime() > Date.now() || 
+        time.getTime() + 31*24*3600000 < tempdate.value.getTime() ||
+        tempdate.value.getTime() + 31*24*3600000 < time.getTime()
+    }
 }
-
 
 </script>
 <style scoped>
