@@ -32,6 +32,7 @@ async function post(path: string, authorization: string, data: any){
          },
         data: JSON.stringify(data)
     }).then(function (response: any) {
+        console.log(response)
         return response.data
     }).catch(function (error: any) {
         console.log(error)

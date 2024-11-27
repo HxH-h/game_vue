@@ -12,7 +12,6 @@
                                 </template>
                                 <template #body>
                                     <div class="username">{{ store.state.username }}</div>
-                                    <div class="level">{{ store.state.level }}</div>
                                     <div class="rank">{{ store.state.rank }}</div>
                                 </template>
 
@@ -29,7 +28,6 @@
                                     </template>
                                     <template #body>
                                         <div class="username">{{ store.state.gamer.opponent_name }}</div>
-                                        <div class="level">{{ store.state.gamer.opponent_level }}</div>
                                         <div class="rank">{{ store.state.gamer.opponent_score }}</div>
                                     </template>
                                 </CardItem>
@@ -128,7 +126,6 @@ onMounted(() => {
             store.state.gamer.turn = msg.turn
             store.state.gamer.opponent_name = msg.opponent_name
             store.state.gamer.opponent_score = msg.opponent_score
-            store.state.gamer.opponent_level = msg.opponent_level
             store.state.gamer.opponent_photo = msg.opponent_photo
         } else if (data.event === "InitChess") {
             console.log(data)

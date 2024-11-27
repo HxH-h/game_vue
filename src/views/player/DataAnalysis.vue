@@ -1,10 +1,31 @@
 <template>
-    <el-date-picker v-model="date" type="daterange" range-separator="-" :start-placeholder="Start"
-        :end-placeholder="End" size="default" 
-        :disabled-date="pickerOptions" @change="durationChange"
-         @calendar-change="canlenderChange" @visible-change = "visibleChange" />
-    <GameCnt :start="Start" :end="End" />
-    <ScoreHistory/>
+    <el-container>
+        <el-row :gutter="20">
+            <!-- 左侧区域 -->
+            <el-col :span="14">
+                <el-row :gutter="20">
+                    <!-- 左上区域 -->
+                    <el-col :span="24">
+                        <el-date-picker v-model="date" type="daterange" range-separator="-" :start-placeholder="Start"
+                            :end-placeholder="End" size="default" :disabled-date="pickerOptions"
+                            @change="durationChange" @calendar-change="canlenderChange"
+                            @visible-change="visibleChange" />
+                    </el-col>
+                    <!-- 左下区域 -->
+                    <el-col :span="24">
+                        <GameCnt :start="Start" :end="End" />
+                    </el-col>
+                </el-row>
+            </el-col>
+            <!-- 右侧区域 -->
+            <el-col :span="10">
+                <SignCalendar/>
+            </el-col>
+        </el-row>
+    </el-container>
+
+    
+    <ScoreHistory />
 
 </template>
 
@@ -13,6 +34,7 @@ import { ref } from "vue";
 import { useStore } from "vuex"
 import GameCnt from '@/components/Statistics/GameCnt.vue';
 import ScoreHistory from "@/components/Statistics/ScoreHistory.vue";
+import SignCalendar from "@/components/Statistics/SignCalendar.vue";
 
 const store = useStore()
 
@@ -39,10 +61,10 @@ function durationChange() {
 }
 
 // 日期改变时触发
-function canlenderChange(val: [Date, null | Date]){
+function canlenderChange(val: [Date, null | Date]) {
     tempdate.value = new Date(val[0])
-} 
-function visibleChange(val: boolean){
+}
+function visibleChange(val: boolean) {
     if (val) tempdate.value = null
 }
 
@@ -65,13 +87,13 @@ function initDates() {
     End.value = formatDate(now)
 }
 // 禁用今天之后的日期
-function pickerOptions(time:any) {
-    if(!tempdate.value){
+function pickerOptions(time: any) {
+    if (!tempdate.value) {
         return time.getTime() > Date.now()
-    }else{
-        return time.getTime() > Date.now() || 
-        time.getTime() + 31*24*3600000 < tempdate.value.getTime() ||
-        tempdate.value.getTime() + 31*24*3600000 < time.getTime()
+    } else {
+        return time.getTime() > Date.now() ||
+            time.getTime() + 31 * 24 * 3600000 < tempdate.value.getTime() ||
+            tempdate.value.getTime() + 31 * 24 * 3600000 < time.getTime()
     }
 }
 

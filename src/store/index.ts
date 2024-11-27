@@ -22,7 +22,6 @@ export default createStore({
     setAccessToken(state, accessToken) {
       state.accessToken = accessToken
       localStorage.setItem("access_token",accessToken)
-
     },
     setUserInfo(state, userInfo) {
       state.username = userInfo.username

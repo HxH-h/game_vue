@@ -25,8 +25,9 @@
                             </template>
                             <span>{{ store.state.username }}</span>
                             <p>邮箱: {{ store.state.email }} </p>
-                            <p>水平: {{ store.state.level }}</p>
                             <p>排名: {{ store.state.rank }}</p>
+                            <el-progress :text-inside="true" :stroke-width="13" :percentage="percentage" :format="text" /><br>
+                            <el-button type="success" @click="signIn" >签到</el-button>
                             <template #footer>
                                 <p>总对局: {{ gamedata.gameNum }}</p>
                                 <p>胜局: {{ gamedata.winNum }}</p>
@@ -73,7 +74,7 @@ import route from '@/router/index';
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { reactive } from 'vue';
-import { get } from '@/ts/request';
+import { get , post } from '@/ts/request';
 import {transform} from '@/ts/utils'
 const store = useStore()
 
@@ -81,6 +82,9 @@ const history = ref([])
 const total = ref(0)
 const gamedata = reactive({})
 const imageUrl = ref('')
+// 经验条百分比
+const percentage = ref(0)
+
 function getDetailedChess(e) {
     const query = e
     const params = JSON.stringify(e)
@@ -130,7 +134,9 @@ function beforeAvatarUpload(file) {
     return isJPG && isLt2M;
 }
 
-
+function text(){
+    return 'Lv' + gamedata.level
+}
 
 onMounted(async () => {
 
@@ -152,9 +158,15 @@ onMounted(async () => {
             history.chess = transform(history.chess)
             return history
         })
+        // 计算胜率
         gamedata.gameNum = Number(inforesp.data.gameNum)
         gamedata.winNum = Number(inforesp.data.winNum)
         gamedata.winRate = (inforesp.data.winNum / inforesp.data.gameNum * 100).toFixed(2)
+        // 计算经验
+        let exp = Number(inforesp.data.level)
+        gamedata.level = parseInt(exp / 10000)
+        percentage.value = (exp % 10000) / 100
+        console.log(percentage.value + " " + gamedata.level)
     }
 
 
@@ -172,6 +184,22 @@ async function getHistory(page) {
         history.value = historyresp.data.map(history => {
             history.chess = transform(history.chess)
             return history
+        })
+    }
+}
+
+async function signIn(){
+    let resp = await post('/player/sign', store.state.accessToken)
+    console.log(resp)
+    if(resp.code == 200){
+        ElMessage({
+            message: resp.msg,
+            type: 'success',
+        })
+    }else{
+        ElMessage({
+            message: resp.msg,
+            type: 'error',
         })
     }
 }
