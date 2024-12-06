@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useStore } from 'vuex';
 
-const url = 'ws://localhost:8080/websocket'
+const url = 'wss://www.the-sky.top/websocket'
 
 const useWsStore = defineStore('websocket', {
 

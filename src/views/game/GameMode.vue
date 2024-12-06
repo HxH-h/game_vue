@@ -8,7 +8,6 @@
             <el-row :gutter="20">
                 <el-col :span="6" :offset="1">
                     <div class="grid-content ep-bg-purple">
-                        <el-button @click="jump('chessgame', 'startAI')">人机对战</el-button>
                         <el-select v-model="value" value-key="id" placeholder="人机对战" @change="selectChange" style="width: 240px">
                             <el-option v-for="item in options" :key="item.id" :label="item.label" :value="item" />
                         </el-select>

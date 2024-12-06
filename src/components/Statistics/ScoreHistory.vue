@@ -9,7 +9,7 @@ import { ref, onMounted, watch } from "vue";
 import { useStore } from "vuex"
 import { get } from '../../ts/request'
 import { ElMessage } from 'element-plus'
-
+import { HISTORY_SCORE_URL } from '@/ts/url';
 
 const store = useStore()
 
@@ -22,7 +22,7 @@ var scoreHistory: any = null
 
 onMounted(async () => {
     scoreHistory = echarts.init(history.value)
-    let resp = await get('/analysis/playerScore', store.state.accessToken, num.value)
+    let resp = await get(HISTORY_SCORE_URL, store.state.accessToken, num.value)
     if (resp.code == 3071) {
         ElMessage({
             message: '场数超出限制',
@@ -78,7 +78,7 @@ function renderChart(data: any) {
 
 const handleChange = async (value: number) => {
     if(value <= 0 || !value) return
-    let resp = await get('/analysis/playerScore', store.state.accessToken, value)
+    let resp = await get(HISTORY_SCORE_URL, store.state.accessToken, value)
     if (resp.code == 3071) {
         ElMessage({
             message: '场数超出限制',

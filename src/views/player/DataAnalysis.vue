@@ -1,9 +1,9 @@
 <template>
     <el-container>
-        <el-row :gutter="20">
+        <el-row :gutter="0">
             <!-- 左侧区域 -->
             <el-col :span="14">
-                <el-row :gutter="20">
+                <el-row :gutter="0">
                     <!-- 左上区域 -->
                     <el-col :span="24">
                         <el-date-picker v-model="date" type="daterange" range-separator="-" :start-placeholder="Start"
@@ -101,7 +101,6 @@ function pickerOptions(time: any) {
 <style scoped>
 .chart {
     background-color: #f5f7fa;
-
     padding: 20px;
     width: 42vw;
     height: 50vh;

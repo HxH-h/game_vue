@@ -8,6 +8,7 @@ import { onMounted, ref, watch, toRefs } from "vue";
 import { useStore } from "vuex"
 import { get } from '../../ts/request'
 import { ElMessage } from 'element-plus'
+import { GAME_CNT_URL } from '@/ts/url';
 
 // 设置绑定属性
 const props = defineProps({
@@ -36,7 +37,7 @@ onMounted(async () => {
     // 监听start end变化
     watch(() => [start.value, end.value],
         async ([newStart, newEnd], [oldStart, oldEnd]) => {
-            let resp = await get('/analysis/gameCnt', store.state.accessToken, newStart, newEnd)
+            let resp = await get(GAME_CNT_URL, store.state.accessToken, newStart, newEnd)
             if (resp.code == 3061) {
                 ElMessage.error('日期非法')
                 return
@@ -44,7 +45,7 @@ onMounted(async () => {
             renderChart(resp.data)
         })
     // 初始化获取数据
-    let resp = await get('/analysis/gameCnt', store.state.accessToken, start.value, end.value)
+    let resp = await get(GAME_CNT_URL, store.state.accessToken, start.value, end.value)
     if (resp.code == 3061) {
         ElMessage.error('日期非法')
         return

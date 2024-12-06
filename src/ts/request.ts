@@ -1,12 +1,11 @@
 import service from "./intercepter"
 
-var baseurl = 'http://localhost:8080'
+var baseurl = 'https://www.the-sky.top/api'
 
 async function get(path: string, authorization: string,...params: any) {
     var url = baseurl + path
     for (let param of params) {
         url += ('/' + param) 
-    
     }
 
     return await service({

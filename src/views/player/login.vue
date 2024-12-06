@@ -46,6 +46,7 @@ import route from '@/router/index';
 import { post, get } from '@/ts/request';
 const ruleFormRef = ref<FormInstance>()
 import { ElMessage } from 'element-plus'
+import { LOGIN_URL , PLAYER_INFO_URL } from '@/ts/url';
 
 
 const store = useStore();
@@ -99,7 +100,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     formEl.validate(async (valid) => {
 
         if (valid) {
-            let response = await post('/login', '', ruleForm)
+            let response = await post(LOGIN_URL, '', ruleForm)
             if (response.code != 1001){
                 ElMessage({
                     message: response.msg,
@@ -109,7 +110,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
                 })
                 return
             }
-            let playerInfo = await get('/player/getPlayerInfo', response.data.accessToken)  
+            let playerInfo = await get(PLAYER_INFO_URL, response.data.accessToken)  
 
             store.commit('setToken', response.data)
             store.commit('setUserInfo', playerInfo.data)

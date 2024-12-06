@@ -6,11 +6,11 @@
                 <img src="../assets/logo.png" style="width: 5vw; background-color: transparent ;" alt="Element logo" />
             </el-menu-item>
 
-            <el-menu-item index="0" style="margin-left: 10vw;color: white"
+            <el-menu-item index="0" style="margin-left: 10vw;color: #A9A9A9"
                 @click="jumpPage('gamemode')">对战模式</el-menu-item>
-            <el-menu-item index="1" style="margin-left: 3svw;color: white"
+            <el-menu-item index="1" style="margin-left: 3svw;color: #A9A9A9"
                 @click="jumpPage('GameList')">对战列表</el-menu-item>
-            <el-menu-item index="2" style="margin-left: 3svw;color: white"
+            <el-menu-item index="2" style="margin-left: 3svw;color: #A9A9A9"
                 @click="jumpPage('RankList')">排行榜</el-menu-item>
 
             <div class="flex-grow" />
@@ -60,18 +60,18 @@ function jumpPage(page) {
 .el-submenu__title:focus,
 .el-submenu__title:hover {
     outline: 0 !important;
-    color: transparent !important;
+    color: black !important;
     background: transparent !important;
 }
 
 .el-menu-item:hover {
     outline: 0 !important;
-    color: #7bafe4 !important;
+    color: black !important;
     background: transparent !important;
 }
 
 .el-menu-item.is-active {
-    color: transparent !important;
+    color: black !important;
     background: transparent !important;
 }
 </style>

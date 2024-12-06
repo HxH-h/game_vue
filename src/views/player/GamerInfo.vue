@@ -76,6 +76,8 @@ import { ElMessage } from 'element-plus'
 import { reactive } from 'vue';
 import { get , post } from '@/ts/request';
 import {transform} from '@/ts/utils'
+import { HISTORY_NUM_URL , PLAYER_INFO_URL , HISTORY_URL , SIGN_URL} from '@/ts/url';
+
 const store = useStore()
 
 const history = ref([])
@@ -140,9 +142,9 @@ function text(){
 
 onMounted(async () => {
 
-    let hisnum = await get('/player/getHisNum', store.state.accessToken)
-    let inforesp = await get('/player/getPlayerInfo', store.state.accessToken)
-    let historyresp = await get('/player/getGameHistory/1/10', store.state.accessToken)
+    let hisnum = await get(HISTORY_NUM_URL, store.state.accessToken)
+    let inforesp = await get(PLAYER_INFO_URL, store.state.accessToken)
+    let historyresp = await get(HISTORY_URL, store.state.accessToken, 1 , 10)
 
     if (inforesp.code == 4001 || historyresp.code == 4001 || hisnum.code == 4001) {
         ElMessage({
@@ -172,7 +174,7 @@ onMounted(async () => {
 
 })
 async function getHistory(page) {
-    let historyresp = await get('/player/getGameHistory/' + page + '/10', store.state.accessToken)
+    let historyresp = await get(HISTORY_URL + '/' + page + '/10', store.state.accessToken)
     if(historyresp.code == 4001){
         ElMessage({
             message: 'your request are blocked please wait sometime',
@@ -189,7 +191,7 @@ async function getHistory(page) {
 }
 
 async function signIn(){
-    let resp = await post('/player/sign', store.state.accessToken)
+    let resp = await post(SIGN_URL, store.state.accessToken)
     console.log(resp)
     if(resp.code == 200){
         ElMessage({

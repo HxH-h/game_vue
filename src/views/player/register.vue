@@ -59,7 +59,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { get, post } from '../../ts/request'
 import router from '@/router';
 import { ElMessage } from 'element-plus'
-
+import { REGISTER_URL , CODE_URL , CAPTCHA_URL } from '@/ts/url';
 
 const ruleFormRef = ref<FormInstance>()
 const imgBase64 = ref('')
@@ -150,7 +150,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            post('/register/register', '', ruleForm)
+            post(REGISTER_URL, '', ruleForm)
             console.log('submit!')
             router.push({ name: 'login' })
         } else {
@@ -160,7 +160,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
 }
 
 async function getCode() {
-    let response = await get('/register/genCode', '', ruleForm.email, ruleForm.captcha)
+    let response = await get(CODE_URL, '', ruleForm.email, ruleForm.captcha)
     if (response.code == 1021){
         ElMessage({
             type: 'success',
@@ -174,7 +174,7 @@ async function getCode() {
     }
 }
 async function getCaptcha() {
-    imgBase64.value = await get('/register/genCaptcha', '')
+    imgBase64.value = await get(CAPTCHA_URL, '')
 
 }
 

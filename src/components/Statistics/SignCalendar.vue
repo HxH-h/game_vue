@@ -13,7 +13,10 @@
             <!-- 每个单元格 -->
             <div :class="getCellClass(data.day)">
                 {{ data.day.split('-').slice(2).join('-') }}
-                <span v-if="isSigned(data.day)" class="signed">签到</span>
+                <br>
+                <span v-if="isSigned(data.day)" class="signed" >
+                    <img src="../../assets/sign.png" height="50" width="50" alt="">
+                </span>
             </div>
         </template>
     </el-calendar>
@@ -24,13 +27,15 @@ import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { get } from '../../ts/request'
 import type { CalendarDateType, CalendarInstance } from 'element-plus'
+import { HISTORY_SIGN_URL } from '@/ts/url'
+
 
 const store = useStore()
 const date = ref(new Date())
 const signData = ref([])
 
 onMounted(async () => {
-    let resp = await get('/analysis/signIn', store.state.accessToken, formatDate(date.value))
+    let resp = await get(HISTORY_SIGN_URL, store.state.accessToken, formatDate(date.value))
     if (resp.code == 200) {
         signData.value = resp.data
     }
@@ -59,7 +64,8 @@ const calendar = ref<CalendarInstance>()
 const selectDate = async (val: CalendarDateType) => {
     if (!calendar.value) return
     calendar.value.selectDate(val)
-    let resp = await get('/analysis/signIn', store.state.accessToken, formatDate(date.value))
+    signData.value = []
+    let resp = await get(HISTORY_SIGN_URL, store.state.accessToken, formatDate(date.value))
     if (resp.code == 200) {
         signData.value = resp.data
     }
@@ -71,4 +77,10 @@ function formatDate(date: Date) {
     return `${year}:${month}`
 }
 </script>
-<style></style>
+<style>
+.el-calendar-table:not(.is-range) td.next,
+.el-calendar-table:not(.is-range) td.prev {
+    pointer-events: none;
+}
+
+</style>
